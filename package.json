@@ -1,6 +1,6 @@
 {
   "name": "@tickets/common",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Common library for microservices (errors, middlewares, events)",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
