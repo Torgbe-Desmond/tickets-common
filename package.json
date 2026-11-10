@@ -11,6 +11,8 @@
     "clean": "del-cli ./build/*",
     "build": "npm run clean && tsc",
     "pub": "npm run build && git add . && git commit -m \"Updates\" && npm version patch && git push --follow-tags",
+    "pub:minor": "npm run build && git add . && git commit -m \"Updates\" && npm version minor && git push --follow-tags",
+    "pub:major": "npm run build && git add . && git commit -m \"Updates\" && npm version major && git push --follow-tags",
     "prepare": "npm run build"
   },
   "keywords": [],
