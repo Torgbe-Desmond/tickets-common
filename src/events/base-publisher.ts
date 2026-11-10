@@ -1,4 +1,4 @@
-import { jetstream, jetstreamManager, StorageType } from "@nats-io/jetstream";
+import { jetstream, StorageType } from "@nats-io/jetstream";
 import type { NatsConnection } from "@nats-io/nats-core";
 import type { JetStreamManager } from "@nats-io/jetstream";
 import { Subjects } from "./subjects";
@@ -18,7 +18,6 @@ export abstract class Publisher<T extends Event> {
   ) {}
 
   async setup() {
-    const jsm = await jetstreamManager(this.nc);
     const streamConfig = {
       name: this.streamName,
       subjects: [this.subject],
@@ -26,10 +25,10 @@ export abstract class Publisher<T extends Event> {
     };
 
     try {
-      await jsm.streams.add(streamConfig);
+      await this.jsm.streams.add(streamConfig);
     } catch {
-      // Already exists with a different config
-      await jsm.streams.update(streamConfig.name, {
+      // Stream exists with a different config
+      await this.jsm.streams.update(streamConfig.name, {
         subjects: streamConfig.subjects,
       });
     }
@@ -39,10 +38,7 @@ export abstract class Publisher<T extends Event> {
     await this.setup();
 
     const js = jetstream(this.nc);
-
     const ack = await js.publish(this.subject, JSON.stringify(data));
     console.log(`stored in stream ${ack.stream} at sequence ${ack.seq}`);
-
-    await this.nc.drain();
   }
 }
